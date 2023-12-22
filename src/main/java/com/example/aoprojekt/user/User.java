@@ -1,12 +1,14 @@
 package com.example.aoprojekt.user;
 
+import com.example.aoprojekt.task.Task;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 @Entity
-@Table(name="users")
+@Table(name="\"user\"")
 public class User {
 
     @Id
@@ -18,6 +20,19 @@ public class User {
     private boolean isAdmin;
 
     private OffsetDateTime createdAt;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Task> tasks;
+
+    public User() {
+
+    }
+
+    public User(String email, boolean isAdmin) {
+        this.email = email;
+        this.isAdmin = isAdmin;
+        this.createdAt = OffsetDateTime.now();
+    }
 
     public void setId(long id) {
         this.id = id;
