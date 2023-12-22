@@ -1,0 +1,1 @@
+INSERT INTO "user" (id, email, created_at, is_admin) VALUES (1, 'bartek.malec@gmail.com', now(), TRUE);

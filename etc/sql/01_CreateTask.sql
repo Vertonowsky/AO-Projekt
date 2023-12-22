@@ -1,0 +1,1 @@
+INSERT INTO "task" (id, title, user_id, created_at, resolved) VALUES (1, 'Przygotowanie składników do zupy', 1, now(), FALSE);
