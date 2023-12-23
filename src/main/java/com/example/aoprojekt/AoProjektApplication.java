@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -27,7 +28,7 @@ public class AoProjektApplication {
 
   @GetMapping("/")
   public ModelAndView index(Authentication authentication, Model model) {
-    Boolean isAdmin = false;
+    boolean isAdmin = false;
 
     if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
       OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
@@ -39,10 +40,12 @@ public class AoProjektApplication {
       System.out.println(email);
       System.out.println(firstName + " " + lastName);
 
+      User user = userRepository.findByEmail(email).orElse(null);
       isAdmin = isAdmin(email);
 
       model.addAttribute("userEmail", email);
       model.addAttribute("title", String.format("Witaj %s!", email));
+      model.addAttribute("userId", user == null ? -1 : user.getId());
     }
 
     model.addAttribute("isAdmin", isAdmin);
@@ -55,31 +58,58 @@ public class AoProjektApplication {
       Boolean isAdmin = false;
 
       if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
-        OAuth2User user = (OAuth2User) authentication.getPrincipal();
-        String email = user.getAttribute("email");
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String email = oAuth2User.getAttribute("email");
 
+        User user = userRepository.findByEmail(email).orElse(null);
         isAdmin = isAdmin(email);
 
-        model.addAttribute("title", String.format("Zadania %s!", email));
+        model.addAttribute("title", "Wszystkie zadania!");
+        model.addAttribute("userId", user == null ? -1 : user.getId());
+        model.addAttribute("allTasks", true);
       }
 
       model.addAttribute("isAdmin", isAdmin);
       return new ModelAndView("task");
     }
 
-
-  @GetMapping("/users")
-  public ModelAndView users(Authentication authentication, Model model) {
-    Boolean isAdmin = false;
+  @GetMapping("/tasks/{userId}")
+  public ModelAndView tasks(@PathVariable("userId") long userId, Authentication authentication, Model model) {
+    boolean isAdmin = false;
 
     if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
-      OAuth2User user = (OAuth2User) authentication.getPrincipal();
-      String email = user.getAttribute("email");
+      OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+      String email = oAuth2User.getAttribute("email");
 
       isAdmin = isAdmin(email);
 
-      model.addAttribute("title", String.format("Zadania użytkownika %s.", email));
+      //TODO sprawdzic czy taki user istnieje (userRepository) - w innym wypadku nie ma zadnych zadan
+
+      model.addAttribute("title", String.format("Zadania uzytkownika %s!", email));
+      model.addAttribute("userId", userId);
     }
+
+    model.addAttribute("isAdmin", isAdmin);
+    return new ModelAndView("task");
+  }
+
+
+  @GetMapping("/users")
+  public ModelAndView users(Authentication authentication, Model model) {
+    boolean isAdmin = false;
+
+    if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+      OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+      String email = oAuth2User.getAttribute("email");
+
+      User user = userRepository.findByEmail(email).orElse(null);
+      isAdmin = isAdmin(email);
+
+      model.addAttribute("title", "Wszyscy użytkownicy!");
+      model.addAttribute("userId", user == null ? -1 : user.getId());
+    }
+
+    //TODO jak ktos nie ma uprawnien to powinno go wyrzucic do strony z logowaniem
 
     model.addAttribute("isAdmin", isAdmin);
     return new ModelAndView("user");

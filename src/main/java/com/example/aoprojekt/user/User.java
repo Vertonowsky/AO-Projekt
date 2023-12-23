@@ -2,9 +2,6 @@ package com.example.aoprojekt.user;
 
 import com.example.aoprojekt.task.Task;
 import jakarta.persistence.*;
-import lombok.Getter;
-
-import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -22,7 +19,7 @@ public class User {
 
     private Date createdAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Task> tasks;
 
     public User() {
@@ -51,4 +48,19 @@ public class User {
         isAdmin = admin;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
 }

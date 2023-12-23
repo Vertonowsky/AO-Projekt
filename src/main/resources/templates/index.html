@@ -74,11 +74,11 @@
         }
 
       .button_mainPage {
-        background: #95DE7A;
+        background: #DEB07A;
       }
 
         .button_mainPage:hover {
-          background: #A1F084;
+          background: #F0BE84;
         }
 
 
@@ -97,13 +97,15 @@
 
           <div th:if="${isAdmin}">
             <a class="button_mainPage" th:href="@{/}">Strona główna</a>
-            <a class="button_users" th:href="@{/users}">Użytkownicy</a>
-            <a class="button_tasks" th:href="@{/tasks}">Zadania</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+            <a class="button_tasks" th:href="@{/tasks}">Wszystkie Zadania</a>
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
           </div>
 
           <div th:if="!${isAdmin}">
             <a class="button_mainPage" th:href="@{/}">Strona główna</a>
-            <a class="button_tasks" th:href="@{/tasks}">Moje zadania</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
           </div>
         </div>
 

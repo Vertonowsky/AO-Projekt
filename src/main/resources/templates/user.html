@@ -73,7 +73,15 @@
         .button_tasks:hover {
             background: #F084DE;
         }
-        
+
+        .button_mainPage {
+            background: #DEB07A;
+        }
+
+        .button_mainPage:hover {
+            background: #F0BE84;
+        }
+
 
         table {
             border-collapse: collapse;
@@ -94,6 +102,7 @@
         td {
             padding: 12px;
             border-bottom: 1px solid #F0F0F0;
+            cursor: pointer;
         }
 
         tbody tr:nth-child(even) {
@@ -120,10 +129,10 @@
                 <th>ID</th>
                 <th>Tytuł</th>
                 <th>Data utworzenia</th>
-                <th>Wykonany</th>
+                <th>Admin</th>
             </tr>
         </thead>
-        <tbody id="taskTableBody"></tbody>
+        <tbody id="userTableBody"></tbody>
     </table>
 </div>
 
@@ -133,35 +142,31 @@
 
 
     $(document).ready(function() {
-        // Pobierz userId z odpowiedniego miejsca (może być zmienna, stała, itp.)
-        const userId = 1; // Tutaj używam wartości przykładowej, zastąp ją odpowiednią logiką
-
-        // Uruchom funkcję odświeżającą widok zadaniami
-        refreshTaskView(userId);
+        const userId = -1;
+        refreshUserView(userId);
     });
 
-    function refreshTaskView(userId) {
+    function refreshUserView(userId) {
         let token = $("meta[name='_csrf']").attr("content");
         let header = $("meta[name='_csrf_header']").attr("content");
 
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "/api/tasks/list/" + userId,
+            url: "/api/users/list",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
             },
-            success: function(tasks) {
-                const taskTableBody = document.getElementById("taskTableBody");
+            success: function(users) {
+                const userTableBody = document.getElementById("userTableBody");
 
-                // Sprawdź, czy taskTableBody nie jest undefined lub null
-                if (taskTableBody) {
-                    // Clear existing rows
-                    taskTableBody.innerHTML = "";
+                console.log(users);
 
-                    // Iterate over tasks and add rows to the table
-                    tasks.forEach(function(task) {
-                        addTaskToTable(task);
+                if (userTableBody) {
+                    userTableBody.innerHTML = "";
+
+                    users.forEach(function(user) {
+                        addUserToTable(user);
                     });
                 }
             },
@@ -173,22 +178,26 @@
     }
 
     // Helper function to add a task to the table
-    function addTaskToTable(task) {
-        const taskTableBody = document.getElementById("taskTableBody");
+    function addUserToTable(user) {
+        const userTableBody = document.getElementById("userTableBody");
 
         // Build the HTML for the new row
         const newRowHtml = `
-            <tr>
-                <td>${task.id}</td>
-                <td>${task.title}</td>
-                <td>${new Date(task.createdAt).toLocaleString()}</td>
-                <td>${task.resolved} <button class="task_resolved">Wykonany</button></td>
+            <tr onClick="openUser(${user.id})">
+                <td>${user.id}</td>
+                <td>${user.email}</td>
+                <td>${new Date(user.createdAt).toLocaleString()}</td>
+                <td>${user.admin}</td>
                 <!-- Add more cells as needed for other task properties -->
             </tr>
         `;
 
         // Append the new row HTML to the table body
-        taskTableBody.innerHTML += newRowHtml;
+        userTableBody.innerHTML += newRowHtml;
+    }
+
+    function openUser(userId) {
+        window.location = "/tasks/" + userId;
     }
 
 </script>

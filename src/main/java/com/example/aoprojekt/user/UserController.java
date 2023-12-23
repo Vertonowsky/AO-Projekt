@@ -14,7 +14,7 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public User get(@PathVariable("id") long id) throws EntityNotFoundException {
         User user = userRepository.findById(id).orElse(null);
         if (user == null)
@@ -31,7 +31,7 @@ public class UserController {
         return userRepository.save(new User(email, false));
     }
 
-    @DeleteMapping("{email}")
+    @DeleteMapping("/{email}")
     public void delete(@PathVariable("email") String email) throws EntityNotFoundException {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null)
@@ -40,7 +40,7 @@ public class UserController {
         userRepository.delete(user);
     }
 
-    @GetMapping("list")
+    @GetMapping("/list")
     public List<User> list() {
         return userRepository.findAll();
     }

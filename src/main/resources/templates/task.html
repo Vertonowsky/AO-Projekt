@@ -75,11 +75,11 @@
         }
 
         .button_mainPage {
-            background: #95DE7A;
+            background: #DEB07A;
         }
 
         .button_mainPage:hover {
-            background: #A1F084;
+            background: #F0BE84;
         }
 
 
@@ -129,6 +129,7 @@
                 <th>Tytuł</th>
                 <th>Data utworzenia</th>
                 <th>Wykonany</th>
+                <th th:if="${allTasks != null}">Przypisana osoba</th>
             </tr>
         </thead>
         <tbody id="taskTableBody"></tbody>
@@ -139,6 +140,8 @@
 
 <script th:inline="javascript">
 
+    const userId  = /*[[${userId}]]*/ -1;
+    const allTasks  = /*[[${allTasks}]]*/ false;
 
     $(document).ready(function() {
         // Pobierz userId z odpowiedniego miejsca (może być zmienna, stała, itp.)
@@ -152,15 +155,19 @@
         let token = $("meta[name='_csrf']").attr("content");
         let header = $("meta[name='_csrf_header']").attr("content");
 
+        let url = userId === -1 ? "/api/tasks/list/all" : "/api/tasks/list/" + userId;
+
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "/api/tasks/list/" + userId,
+            url: url,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
             },
             success: function(tasks) {
                 const taskTableBody = document.getElementById("taskTableBody");
+
+                console.log(tasks);
 
                 // Sprawdź, czy taskTableBody nie jest undefined lub null
                 if (taskTableBody) {
@@ -185,15 +192,24 @@
         const taskTableBody = document.getElementById("taskTableBody");
 
         // Build the HTML for the new row
-        const newRowHtml = `
+        let newRowHtml = `
             <tr>
                 <td>${task.id}</td>
                 <td>${task.title}</td>
                 <td>${new Date(task.createdAt).toLocaleString()}</td>
                 <td>${task.resolved} <button class="task_resolved">Wykonany</button></td>
-                <!-- Add more cells as needed for other task properties -->
-            </tr>
-        `;
+                `;
+
+        if (!allTasks) {
+            newRowHtml = newRowHtml + `
+                </tr>
+            `;
+        } else {
+            newRowHtml = newRowHtml + `
+                <td>TODO</td>
+        </tr>
+            `;
+        }
 
         // Append the new row HTML to the table body
         taskTableBody.innerHTML += newRowHtml;

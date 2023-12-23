@@ -1,6 +1,8 @@
 package com.example.aoprojekt.task;
 
 import com.example.aoprojekt.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -22,6 +24,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Task() {

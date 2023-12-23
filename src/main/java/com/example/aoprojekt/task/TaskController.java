@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -55,6 +56,11 @@ public class TaskController {
             throw new EntityNotFoundException(String.format("User with id %d doesn't exist!", userId));
 
         return taskRepository.findAllByUser(user);
+    }
+
+    @GetMapping("/list/all")
+    public List<Task> list(){
+        return taskRepository.findAll();
     }
 
 }
