@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
+@EnableWebMvc
 @Controller
 public class AoProjektApplication {
 
@@ -35,4 +37,10 @@ public class AoProjektApplication {
 
     return new ModelAndView("index");
   }
+
+    @GetMapping("/tasks")
+    public ModelAndView tasks() {
+        return new ModelAndView("task");
+    }
+
 }

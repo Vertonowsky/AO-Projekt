@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+
+<h1>Task List</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Description</th>
+        <!-- Dodaj inne kolumny związane z zadaniami -->
+    </tr>
+    </thead>
+    <tbody id="taskTableBody">
+    <!-- Tutaj będą wstawiane dynamicznie zadania -->
+    </tbody>
+</table>
+
+<script th:inline="javascript">
+
+
+    $(document).ready(function() {
+        // Pobierz userId z odpowiedniego miejsca (może być zmienna, stała, itp.)
+        const userId = 1; // Tutaj używam wartości przykładowej, zastąp ją odpowiednią logiką
+
+        // Uruchom funkcję odświeżającą widok zadaniami
+        refreshTaskView(userId);
+    });
+
+    function refreshTaskView(userId) {
+        let token = $("meta[name='_csrf']").attr("content");
+        let header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/tasks/list/" + userId,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(tasks) {
+                const taskTableBody = document.getElementById("taskTableBody");
+
+                // Sprawdź, czy taskTableBody nie jest undefined lub null
+                if (taskTableBody) {
+                    // Clear existing rows
+                    taskTableBody.innerHTML = "";
+
+                    // Iterate over tasks and add rows to the table
+                    tasks.forEach(function(task) {
+                        addTaskToTable(task);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                alert(error);
+                console.warn(xhr.responseText);
+            }
+        });
+    }
+
+    // Helper function to add a task to the table
+    function addTaskToTable(task) {
+        const taskTableBody = document.getElementById("taskTableBody");
+        const row = document.createElement("tr");
+
+        // Create and append cells
+        const idCell = document.createElement("td");
+        idCell.textContent = task.id;
+        row.appendChild(idCell);
+
+        const titleCell = document.createElement("td");
+        titleCell.textContent = task.title;
+        row.appendChild(titleCell);
+
+        const descriptionCell = document.createElement("td");
+        descriptionCell.textContent = task.description;
+        row.appendChild(descriptionCell);
+
+        // Add more cells as needed for other task properties
+
+        // Append the row to the table body
+        taskTableBody.appendChild(row);
+    }
+</script>
+
+</body>
+</html>
