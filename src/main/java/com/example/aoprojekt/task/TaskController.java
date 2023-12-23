@@ -4,12 +4,16 @@ import com.example.aoprojekt.exception.EntityNotFoundException;
 import com.example.aoprojekt.user.User;
 import com.example.aoprojekt.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 @RestController
+@Controller
 @RequestMapping("/api/tasks")
 @AllArgsConstructor
 public class TaskController {
@@ -17,7 +21,6 @@ public class TaskController {
     private final TaskRepository taskRepository;
 
     private final UserRepository userRepository;
-
 
     @GetMapping("{id}")
     public Task get(@PathVariable("id") long id) throws EntityNotFoundException {
@@ -46,13 +49,18 @@ public class TaskController {
         taskRepository.delete(task);
     }
 
-    @GetMapping("list/{userId}")
+    @GetMapping("/list/{userId}")
     public Set<Task> list(@PathVariable("userId") long userId) throws EntityNotFoundException {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null)
             throw new EntityNotFoundException(String.format("User with id %d doesn't exist!", userId));
 
         return taskRepository.findAllByUser(user);
+    }
+
+    @GetMapping("/list/all")
+    public List<Task> list(){
+        return taskRepository.findAll();
     }
 
 }

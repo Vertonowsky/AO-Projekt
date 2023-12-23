@@ -3,8 +3,115 @@
   <head>
     <meta charset="UTF-8" />
     <title>Panel glowny</title>
+
+    <base href="/">
+    <link href="/css/main.css" type="text/html">
+
+
+    <style>
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .body_container {
+        margin-top: 50px;
+        width: 80%;
+        height: 80%;
+      }
+
+      .header {
+        box-sizing: border-box;
+        display: flex;
+        width: 100%;
+        padding: 20px 10px;
+        background: #F0F0F0;
+      }
+
+      .header .right {
+        margin-left: auto;
+        margin-right: 20px;
+      }
+
+      a {
+        font-size: 15px;
+        padding: 10px 12px;
+        background: green;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background 0.3s;
+        color: #fff;
+      }
+
+      a:hover {
+        cursor: pointer;
+      }
+
+      .button_users {
+        background: #7AC0DE;
+      }
+
+        .button_users:hover {
+          background: #84CFF0;
+        }
+
+      .button_tasks {
+        background: #DE7ACE;
+      }
+
+        .button_tasks:hover {
+          background: #F084DE;
+        }
+
+      .button_mainPage {
+        background: #DEB07A;
+      }
+
+        .button_mainPage:hover {
+          background: #F0BE84;
+        }
+
+
+    </style>
+
   </head>
   <body>
-    <p>Witaj <span th:text="${userEmail}"></span>!</p>
+
+    <div class="body_container">
+
+      <div class="header" th:fragment="header(title = ${title})">
+
+        <p th:text="${title}"></p>
+
+        <div class="right">
+
+          <div th:if="${isAdmin}">
+            <a class="button_mainPage" th:href="@{/}">Strona główna</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+            <a class="button_tasks" th:href="@{/tasks}">Wszystkie Zadania</a>
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
+          </div>
+
+          <div th:if="!${isAdmin}">
+            <a class="button_mainPage" th:href="@{/}">Strona główna</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
   </body>
 </html>

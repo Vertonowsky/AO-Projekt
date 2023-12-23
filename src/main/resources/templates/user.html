@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+
+    <style>
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .body_container {
+            margin-top: 50px;
+            width: 80%;
+            height: 80%;
+        }
+
+        .header {
+            box-sizing: border-box;
+            display: flex;
+            width: 100%;
+            padding: 20px 10px;
+            background: #F0F0F0;
+        }
+
+        .header .right {
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        a {
+            font-size: 15px;
+            padding: 10px 12px;
+            background: green;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+            color: #fff;
+        }
+
+        a:hover {
+            cursor: pointer;
+        }
+
+        .button_users {
+            background: #7AC0DE;
+        }
+
+        .button_users:hover {
+            background: #84CFF0;
+        }
+
+        .button_tasks {
+            background: #DE7ACE;
+        }
+
+        .button_tasks:hover {
+            background: #F084DE;
+        }
+
+        .button_mainPage {
+            background: #DEB07A;
+        }
+
+        .button_mainPage:hover {
+            background: #F0BE84;
+        }
+
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        th {
+            background: #7ADE84;
+            padding: 16px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #F0F0F0;
+            cursor: pointer;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background: #F2F2F2;
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+<div class="body_container">
+
+    <div th:insert="~{index :: header(${title})}"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tytuł</th>
+                <th>Data utworzenia</th>
+                <th>Admin</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script th:inline="javascript">
+
+
+    $(document).ready(function() {
+        const userId = -1;
+        refreshUserView(userId);
+    });
+
+    function refreshUserView(userId) {
+        let token = $("meta[name='_csrf']").attr("content");
+        let header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/users/list",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(users) {
+                const userTableBody = document.getElementById("userTableBody");
+
+                console.log(users);
+
+                if (userTableBody) {
+                    userTableBody.innerHTML = "";
+
+                    users.forEach(function(user) {
+                        addUserToTable(user);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                alert(error);
+                console.warn(xhr.responseText);
+            }
+        });
+    }
+
+    // Helper function to add a task to the table
+    function addUserToTable(user) {
+        const userTableBody = document.getElementById("userTableBody");
+
+        // Build the HTML for the new row
+        const newRowHtml = `
+            <tr onClick="openUser(${user.id})">
+                <td>${user.id}</td>
+                <td>${user.email}</td>
+                <td>${new Date(user.createdAt).toLocaleString()}</td>
+                <td>${user.admin}</td>
+                <!-- Add more cells as needed for other task properties -->
+            </tr>
+        `;
+
+        // Append the new row HTML to the table body
+        userTableBody.innerHTML += newRowHtml;
+    }
+
+    function openUser(userId) {
+        window.location = "/tasks/" + userId;
+    }
+
+</script>
+
+</body>
+</html>
