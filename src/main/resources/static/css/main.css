@@ -1,0 +1,99 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+p {
+  margin: 0;
+}
+
+.body_container {
+  margin-top: 50px;
+  width: 80%;
+  height: 80%;
+}
+
+.header {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  padding: 20px 10px;
+  background: #f0f0f0;
+}
+
+.header .right {
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+a {
+  font-size: 15px;
+  padding: 10px 12px;
+  background: green;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s;
+  color: #fff;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.button_users {
+  background: #7ac0de;
+}
+
+.button_users:hover {
+  background: #84cff0;
+}
+
+.button_tasks {
+  background: #de7ace;
+}
+
+.button_tasks:hover {
+  background: #f084de;
+}
+
+.button_mainPage {
+  background: #deb07a;
+}
+
+.button_mainPage:hover {
+  background: #f0be84;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  text-align: center;
+}
+
+tbody tr {
+  transition: background 0.2s;
+}
+
+th {
+  background: #7ade84;
+  padding: 16px;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+tbody tr:hover {
+  background: #f2f2f2;
+}

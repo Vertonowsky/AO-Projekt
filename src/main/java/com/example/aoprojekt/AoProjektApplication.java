@@ -12,10 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
-@EnableWebMvc
 @Controller
 @AllArgsConstructor
 public class AoProjektApplication {
@@ -53,28 +51,29 @@ public class AoProjektApplication {
     return new ModelAndView("index");
   }
 
-    @GetMapping("/tasks")
-    public ModelAndView tasks(Authentication authentication, Model model) {
-      Boolean isAdmin = false;
+  @GetMapping("/tasks")
+  public ModelAndView tasks(Authentication authentication, Model model) {
+    Boolean isAdmin = false;
 
-      if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = oAuth2User.getAttribute("email");
+    if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+      OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+      String email = oAuth2User.getAttribute("email");
 
-        User user = userRepository.findByEmail(email).orElse(null);
-        isAdmin = isAdmin(email);
+      User user = userRepository.findByEmail(email).orElse(null);
+      isAdmin = isAdmin(email);
 
-        model.addAttribute("title", "Wszystkie zadania!");
-        model.addAttribute("userId", user == null ? -1 : user.getId());
-        model.addAttribute("allTasks", true);
-      }
-
-      model.addAttribute("isAdmin", isAdmin);
-      return new ModelAndView("task");
+      model.addAttribute("title", "Wszystkie zadania!");
+      model.addAttribute("userId", user == null ? -1 : user.getId());
+      model.addAttribute("allTasks", true);
     }
 
+    model.addAttribute("isAdmin", isAdmin);
+    return new ModelAndView("task");
+  }
+
   @GetMapping("/tasks/{userId}")
-  public ModelAndView tasks(@PathVariable("userId") long userId, Authentication authentication, Model model) {
+  public ModelAndView tasks(
+      @PathVariable("userId") long userId, Authentication authentication, Model model) {
     boolean isAdmin = false;
 
     if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
@@ -83,7 +82,8 @@ public class AoProjektApplication {
 
       isAdmin = isAdmin(email);
 
-      //TODO sprawdzic czy taki user istnieje (userRepository) - w innym wypadku nie ma zadnych zadan
+      // TODO sprawdzic czy taki user istnieje (userRepository) - w innym wypadku nie ma zadnych
+      // zadan
 
       model.addAttribute("title", String.format("Zadania uzytkownika %s!", email));
       model.addAttribute("userId", userId);
@@ -92,7 +92,6 @@ public class AoProjektApplication {
     model.addAttribute("isAdmin", isAdmin);
     return new ModelAndView("task");
   }
-
 
   @GetMapping("/users")
   public ModelAndView users(Authentication authentication, Model model) {
@@ -109,19 +108,16 @@ public class AoProjektApplication {
       model.addAttribute("userId", user == null ? -1 : user.getId());
     }
 
-    //TODO jak ktos nie ma uprawnien to powinno go wyrzucic do strony z logowaniem
+    // TODO jak ktos nie ma uprawnien to powinno go wyrzucic do strony z logowaniem
 
     model.addAttribute("isAdmin", isAdmin);
     return new ModelAndView("user");
   }
 
-
   public boolean isAdmin(String email) {
     User user = userRepository.findByEmail(email).orElse(null);
-    if (user == null)
-      return false;
+    if (user == null) return false;
 
     return user.isAdmin();
   }
-
 }
