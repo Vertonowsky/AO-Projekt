@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -19,7 +20,7 @@ public class User {
 
     private boolean isAdmin;
 
-    private OffsetDateTime createdAt;
+    private Date createdAt;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Task> tasks;
@@ -31,7 +32,7 @@ public class User {
     public User(String email, boolean isAdmin) {
         this.email = email;
         this.isAdmin = isAdmin;
-        this.createdAt = OffsetDateTime.now();
+        this.createdAt = new Date(System.currentTimeMillis());
     }
 
     public void setId(long id) {
@@ -50,7 +51,4 @@ public class User {
         isAdmin = admin;
     }
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }

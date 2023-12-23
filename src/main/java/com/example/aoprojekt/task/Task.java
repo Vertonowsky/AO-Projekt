@@ -4,6 +4,7 @@ import com.example.aoprojekt.user.User;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "\"task\"")
@@ -17,7 +18,7 @@ public class Task {
 
     private boolean resolved;
 
-    private OffsetDateTime createdAt;
+    private Date createdAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -30,7 +31,7 @@ public class Task {
     public Task(String title, User user) {
         this.title = title;
         this.user = user;
-        this.createdAt = OffsetDateTime.now();
+        this.createdAt = new Date(System.currentTimeMillis());
         this.resolved = false;
     }
 
@@ -59,11 +60,11 @@ public class Task {
         this.resolved = resolved;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
