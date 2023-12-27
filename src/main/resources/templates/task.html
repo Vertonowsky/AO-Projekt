@@ -11,7 +11,22 @@
   </head>
   <body>
     <div class="body_container">
-      <div th:insert="~{index :: header(${title})}"></div>
+      <div class="header" th:fragment="header(title = ${title})">
+        <p th:text="${title}"></p>
+
+        <div class="right">
+          <div th:if="${isAdmin}">
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+            <a class="button_tasks" th:href="@{/tasks}">Wszystkie Zadania</a>
+          </div>
+
+          <div th:if="!${isAdmin}">
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+          </div>
+        </div>
+      </div>
 
       <table>
         <thead>

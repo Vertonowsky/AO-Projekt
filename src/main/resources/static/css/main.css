@@ -80,13 +80,17 @@ tbody tr {
   transition: background 0.2s;
 }
 
+th, td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
 th {
   background: #7ade84;
-  padding: 16px;
 }
 
 td {
-  padding: 12px;
   border-bottom: 1px solid #f0f0f0;
 }
 

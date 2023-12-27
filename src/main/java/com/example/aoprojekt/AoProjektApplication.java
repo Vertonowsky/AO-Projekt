@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @SpringBootApplication
 @Controller
@@ -44,11 +45,13 @@ public class AoProjektApplication {
       model.addAttribute("userEmail", email);
       model.addAttribute("title", String.format("Witaj %s!", email));
       model.addAttribute("userId", user == null ? -1 : user.getId());
+      model.addAttribute("isAdmin", isAdmin);
+      return new ModelAndView("task");
     }
-
-    model.addAttribute("isAdmin", isAdmin);
-
-    return new ModelAndView("index");
+    else 
+    {
+      return new ModelAndView(new RedirectView("/login", true));
+    }
   }
 
   @GetMapping("/tasks")
@@ -119,5 +122,13 @@ public class AoProjektApplication {
     if (user == null) return false;
 
     return user.isAdmin();
+  }
+
+  @GetMapping("/login")
+  public ModelAndView login(Authentication authentication, Model model) {
+    
+    // TODO Strona z logowaniem (Sam google czy może jeszcze inna opcja?)
+
+    return new ModelAndView("login");
   }
 }
