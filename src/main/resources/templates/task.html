@@ -1,194 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Task List</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
 
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  </head>
+  <body>
+    <div class="body_container">
+      <div class="header" th:fragment="header(title = ${title})">
+        <p th:text="${title}"></p>
 
+        <div class="right">
+          <div th:if="${isAdmin}">
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+            <a class="button_tasks" th:href="@{/tasks}">Wszystkie Zadania</a>
+          </div>
 
-    <style>
+          <div th:if="!${isAdmin}">
+            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
+            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+          </div>
+        </div>
+      </div>
 
-        html,
-        body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        p {
-            margin: 0;
-        }
-
-        .body_container {
-            margin-top: 50px;
-            width: 80%;
-            height: 80%;
-        }
-
-        .header {
-            box-sizing: border-box;
-            display: flex;
-            width: 100%;
-            padding: 20px 10px;
-            background: #F0F0F0;
-        }
-
-        .header .right {
-            margin-left: auto;
-            margin-right: 20px;
-        }
-
-        a {
-            font-size: 15px;
-            padding: 10px 12px;
-            background: green;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background 0.3s;
-            color: #fff;
-        }
-
-        a:hover {
-            cursor: pointer;
-        }
-
-        .button_users {
-            background: #7AC0DE;
-        }
-
-        .button_users:hover {
-            background: #84CFF0;
-        }
-
-        .button_tasks {
-            background: #DE7ACE;
-        }
-
-        .button_tasks:hover {
-            background: #F084DE;
-        }
-
-        .button_mainPage {
-            background: #DEB07A;
-        }
-
-        .button_mainPage:hover {
-            background: #F0BE84;
-        }
-
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        tbody tr {
-            transition: background 0.2s;
-        }
-
-        th {
-            background: #7ADE84;
-            padding: 16px;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #F0F0F0;
-        }
-
-        tbody tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        tbody tr:hover {
-            background: #F2F2F2;
-        }
-
-    </style>
-
-
-</head>
-<body>
-
-<div class="body_container">
-
-    <div th:insert="~{index :: header(${title})}"></div>
-
-    <table>
+      <table>
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Tytuł</th>
-                <th>Data utworzenia</th>
-                <th>Wykonany</th>
-                <th th:if="${allTasks != null}">Przypisana osoba</th>
-            </tr>
+          <tr>
+            <th>ID</th>
+            <th>Tytuł</th>
+            <th>Data utworzenia</th>
+            <th>Wykonany</th>
+            <th th:if="${allTasks != null}">Przypisana osoba</th>
+          </tr>
         </thead>
         <tbody id="taskTableBody"></tbody>
-    </table>
-</div>
+      </table>
+    </div>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<script th:inline="javascript">
+    <script th:inline="javascript">
+      const userId = /*[[${userId}]]*/ -1;
+      const allTasks = /*[[${allTasks}]]*/ false;
 
-    const userId  = /*[[${userId}]]*/ -1;
-    const allTasks  = /*[[${allTasks}]]*/ false;
-
-    $(document).ready(function() {
+      $(document).ready(function () {
         // Pobierz userId z odpowiedniego miejsca (może być zmienna, stała, itp.)
         const userId = 1; // Tutaj używam wartości przykładowej, zastąp ją odpowiednią logiką
 
         // Uruchom funkcję odświeżającą widok zadaniami
         refreshTaskView(userId);
-    });
+      });
 
-    function refreshTaskView(userId) {
+      function refreshTaskView(userId) {
         let token = $("meta[name='_csrf']").attr("content");
         let header = $("meta[name='_csrf_header']").attr("content");
 
-        let url = userId === -1 ? "/api/tasks/list/all" : "/api/tasks/list/" + userId;
+        let url =
+          userId === -1 ? "/api/tasks/list/all" : "/api/tasks/list/" + userId;
 
         $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: url,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-            },
-            success: function(tasks) {
-                const taskTableBody = document.getElementById("taskTableBody");
+          type: "GET",
+          dataType: "json",
+          url: url,
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+          },
+          success: function (tasks) {
+            const taskTableBody = document.getElementById("taskTableBody");
 
-                console.log(tasks);
+            console.log(tasks);
 
-                // Sprawdź, czy taskTableBody nie jest undefined lub null
-                if (taskTableBody) {
-                    // Clear existing rows
-                    taskTableBody.innerHTML = "";
+            // Sprawdź, czy taskTableBody nie jest undefined lub null
+            if (taskTableBody) {
+              // Clear existing rows
+              taskTableBody.innerHTML = "";
 
-                    // Iterate over tasks and add rows to the table
-                    tasks.forEach(function(task) {
-                        addTaskToTable(task);
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                alert(error);
-                console.warn(xhr.responseText);
+              // Iterate over tasks and add rows to the table
+              tasks.forEach(function (task) {
+                addTaskToTable(task);
+              });
             }
+          },
+          error: function (xhr, status, error) {
+            alert(error);
+            console.warn(xhr.responseText);
+          },
         });
-    }
+      }
 
-    // Helper function to add a task to the table
-    function addTaskToTable(task) {
+      // Helper function to add a task to the table
+      function addTaskToTable(task) {
         const taskTableBody = document.getElementById("taskTableBody");
 
         // Build the HTML for the new row
@@ -197,15 +103,21 @@
                 <td>${task.id}</td>
                 <td>${task.title}</td>
                 <td>${new Date(task.createdAt).toLocaleString()}</td>
-                <td>${task.resolved} <button class="task_resolved">Wykonany</button></td>
+                <td>${
+                  task.resolved
+                } <button class="task_resolved">Wykonany</button></td>
                 `;
 
         if (!allTasks) {
-            newRowHtml = newRowHtml + `
+          newRowHtml =
+            newRowHtml +
+            `
                 </tr>
             `;
         } else {
-            newRowHtml = newRowHtml + `
+          newRowHtml =
+            newRowHtml +
+            `
                 <td>TODO</td>
         </tr>
             `;
@@ -213,9 +125,7 @@
 
         // Append the new row HTML to the table body
         taskTableBody.innerHTML += newRowHtml;
-    }
-
-</script>
-
-</body>
+      }
+    </script>
+  </body>
 </html>
