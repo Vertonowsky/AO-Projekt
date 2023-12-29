@@ -4,128 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Task List</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
 
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   </head>
   <body>
-    <div class="body_container">
-      <div class="header" th:fragment="header(title = ${title})">
-        <p th:text="${title}"></p>
-
-        <div class="right">
-          <div th:if="${isAdmin}">
-            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
-            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
-            <a class="button_tasks" th:href="@{/tasks}">Wszystkie Zadania</a>
-          </div>
-
-          <div th:if="!${isAdmin}">
-            <a class="button_tasks" th:href="@{'/tasks/' + ${userId}}">Moje zadania</a>
-            <a class="button_users" th:href="@{/users}">Wszyscy użytkownicy</a>
+    <header th:replace="~{index.html :: header}"></header>
+    <main class="container my-5">
+      <h1>Moje zadania</h1>
+      <div th:each="task : ${tasks}">
+        <div class="card my-2">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${task.title}"></h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">
+              Card subtitle
+            </h6>
+            <p class="card-text">
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
           </div>
         </div>
       </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Tytuł</th>
-            <th>Data utworzenia</th>
-            <th>Wykonany</th>
-            <th th:if="${allTasks != null}">Przypisana osoba</th>
-          </tr>
-        </thead>
-        <tbody id="taskTableBody"></tbody>
-      </table>
-    </div>
+    </main>
+    <div class="body_container"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <script th:inline="javascript">
-      const userId = /*[[${userId}]]*/ -1;
-      const allTasks = /*[[${allTasks}]]*/ false;
-
-      $(document).ready(function () {
-        // Pobierz userId z odpowiedniego miejsca (może być zmienna, stała, itp.)
-        const userId = 1; // Tutaj używam wartości przykładowej, zastąp ją odpowiednią logiką
-
-        // Uruchom funkcję odświeżającą widok zadaniami
-        refreshTaskView(userId);
-      });
-
-      function refreshTaskView(userId) {
-        let token = $("meta[name='_csrf']").attr("content");
-        let header = $("meta[name='_csrf_header']").attr("content");
-
-        let url =
-          userId === -1 ? "/api/tasks/list/all" : "/api/tasks/list/" + userId;
-
-        $.ajax({
-          type: "GET",
-          dataType: "json",
-          url: url,
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
-          },
-          success: function (tasks) {
-            const taskTableBody = document.getElementById("taskTableBody");
-
-            console.log(tasks);
-
-            // Sprawdź, czy taskTableBody nie jest undefined lub null
-            if (taskTableBody) {
-              // Clear existing rows
-              taskTableBody.innerHTML = "";
-
-              // Iterate over tasks and add rows to the table
-              tasks.forEach(function (task) {
-                addTaskToTable(task);
-              });
-            }
-          },
-          error: function (xhr, status, error) {
-            alert(error);
-            console.warn(xhr.responseText);
-          },
-        });
-      }
-
-      // Helper function to add a task to the table
-      function addTaskToTable(task) {
-        const taskTableBody = document.getElementById("taskTableBody");
-
-        // Build the HTML for the new row
-        let newRowHtml = `
-            <tr>
-                <td>${task.id}</td>
-                <td>${task.title}</td>
-                <td>${new Date(task.createdAt).toLocaleString()}</td>
-                <td>${
-                  task.resolved
-                } <button class="task_resolved">Wykonany</button></td>
-                `;
-
-        if (!allTasks) {
-          newRowHtml =
-            newRowHtml +
-            `
-                </tr>
-            `;
-        } else {
-          newRowHtml =
-            newRowHtml +
-            `
-                <td>TODO</td>
-        </tr>
-            `;
-        }
-
-        // Append the new row HTML to the table body
-        taskTableBody.innerHTML += newRowHtml;
-      }
-    </script>
+    <script th:src="@{js/bootstrap.js}"></script>
   </body>
 </html>

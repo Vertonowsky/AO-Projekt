@@ -1,66 +1,41 @@
 package com.example.aoprojekt.task;
 
-import com.example.aoprojekt.exception.EntityNotFoundException;
 import com.example.aoprojekt.user.User;
 import com.example.aoprojekt.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Set;
-
-@RestController
 @Controller
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 @AllArgsConstructor
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+  private final TaskRepository taskRepository;
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @GetMapping("{id}")
-    public Task get(@PathVariable("id") long id) throws EntityNotFoundException {
-        Task task = taskRepository.findById(id).orElse(null);
-        if (task == null)
-            throw new EntityNotFoundException(String.format("Task with id %d doesn't exist!", id));
+  @GetMapping("{userId}")
+  public String tasks(
+      @PathVariable("userId") long userId, Authentication authentication, Model model) {
+    boolean isAdmin = false;
 
-        return task;
+    if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+      OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+      String email = oAuth2User.getAttribute("email");
+
+      isAdmin = true;
+
+      User user = userRepository.findByEmail(email).orElseThrow();
+
+      System.out.println(taskRepository.findAllByUser(user));
+
+      model.addAttribute("tasks", taskRepository.findAllByUser(user));
     }
 
-    @PostMapping
-    public Task create(@Valid @RequestBody TaskDto taskDto) throws EntityNotFoundException {
-        User user = userRepository.findById(taskDto.getUserId()).orElse(null);
-        if (user == null)
-            throw new EntityNotFoundException(String.format("User with id %d doesn't exist!", taskDto.getUserId()));
-
-        return taskRepository.save(new Task(taskDto.getTitle(), user));
-    }
-
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") long id) throws EntityNotFoundException {
-        Task task = taskRepository.findById(id).orElse(null);
-        if (task == null)
-            throw new EntityNotFoundException(String.format("Task with id %s doesn't exist!", id));
-
-        taskRepository.delete(task);
-    }
-
-    @GetMapping("/list/{userId}")
-    public Set<Task> list(@PathVariable("userId") long userId) throws EntityNotFoundException {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null)
-            throw new EntityNotFoundException(String.format("User with id %d doesn't exist!", userId));
-
-        return taskRepository.findAllByUser(user);
-    }
-
-    @GetMapping("/list/all")
-    public List<Task> list(){
-        return taskRepository.findAll();
-    }
-
+    return "task";
+  }
 }

@@ -5,88 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Task List</title>
 
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   </head>
   <body>
-    <div class="body_container">
-      <div th:insert="~{task :: header(${title})}"></div>
-
-      <table>
+    <header th:replace="~{index.html :: header}"></header>
+    <div class="container my-5">
+      <table class="table" style="cursor: pointer">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Tytuł</th>
-            <th>Data utworzenia</th>
-            <th>Admin</th>
+            <th scope="col">ID</th>
+            <th scope="col">Tytuł</th>
+            <th scope="col">Data utworzenia</th>
+            <th scope="col">Admin</th>
           </tr>
         </thead>
-        <tbody id="userTableBody"></tbody>
+        <tbody>
+          <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.createdAt}"></td>
+            <td th:text="${user.admin}"></td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <script th:inline="javascript">
-      $(document).ready(function () {
-        const userId = -1;
-        refreshUserView(userId);
-      });
-
-      function refreshUserView(userId) {
-        let token = $("meta[name='_csrf']").attr("content");
-        let header = $("meta[name='_csrf_header']").attr("content");
-
-        $.ajax({
-          type: "GET",
-          dataType: "json",
-          url: "/api/users/list",
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
-          },
-          success: function (users) {
-            const userTableBody = document.getElementById("userTableBody");
-
-            console.log(users);
-
-            if (userTableBody) {
-              userTableBody.innerHTML = "";
-
-              users.forEach(function (user) {
-                addUserToTable(user);
-              });
-            }
-          },
-          error: function (xhr, status, error) {
-            alert(error);
-            console.warn(xhr.responseText);
-          },
-        });
-      }
-
-      // Helper function to add a task to the table
-      function addUserToTable(user) {
-        const userTableBody = document.getElementById("userTableBody");
-
-        // Build the HTML for the new row
-        const newRowHtml = `
-            <tr onClick="openUser(${user.id})">
-                <td>${user.id}</td>
-                <td>${user.email}</td>
-                <td>${new Date(user.createdAt).toLocaleString()}</td>
-                <td>${user.admin}</td>
-                <!-- Add more cells as needed for other task properties -->
-            </tr>
-        `;
-
-        // Append the new row HTML to the table body
-        userTableBody.innerHTML += newRowHtml;
-      }
-
-      function openUser(userId) {
-        window.location = "/tasks/" + userId;
-      }
-    </script>
+    <script th:src="@{js/bootstrap.js}"></script>
   </body>
 </html>

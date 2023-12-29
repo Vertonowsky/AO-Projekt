@@ -1,48 +1,44 @@
 package com.example.aoprojekt.user;
 
-import com.example.aoprojekt.exception.ConflictException;
-import com.example.aoprojekt.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/users")
+@Controller
+@RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @GetMapping("/{id}")
-    public User get(@PathVariable("id") long id) throws EntityNotFoundException {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null)
-            throw new EntityNotFoundException(String.format("User with id %d doesn't exist!", id));
+  @GetMapping
+  public ModelAndView users(Authentication authentication, Model model) {
+    boolean isAdmin = false;
 
-        return user;
+    if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+      OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+      String email = oAuth2User.getAttribute("email");
+
+      User user = userRepository.findByEmail(email).orElse(null);
+      isAdmin = isAdmin(email);
+
+      model.addAttribute("title", "Wszyscy użytkownicy!");
+      model.addAttribute("userId", user == null ? -1 : user.getId());
     }
 
-    @PostMapping
-    public User create(@RequestBody String email) throws ConflictException {
-        if (userRepository.findByEmail(email).isPresent())
-            throw new ConflictException("User already exists!");
+    model.addAttribute("users", userRepository.findAll());
+    model.addAttribute("isAdmin", isAdmin);
+    return new ModelAndView("user");
+  }
 
-        return userRepository.save(new User(email, false));
-    }
+  public boolean isAdmin(String email) {
+    User user = userRepository.findByEmail(email).orElse(null);
+    if (user == null) return false;
 
-    @DeleteMapping("/{email}")
-    public void delete(@PathVariable("email") String email) throws EntityNotFoundException {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null)
-            throw new EntityNotFoundException(String.format("User with email %s doesn't exist!", email));
-
-        userRepository.delete(user);
-    }
-
-    @GetMapping("/list")
-    public List<User> list() {
-        return userRepository.findAll();
-    }
-
+    return user.isAdmin();
+  }
 }
