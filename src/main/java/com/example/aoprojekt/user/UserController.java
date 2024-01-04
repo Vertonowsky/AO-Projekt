@@ -1,5 +1,7 @@
 package com.example.aoprojekt.user;
 
+import com.example.aoprojekt.exception.EntityNotFoundException;
+import com.example.aoprojekt.group.GroupUsers;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -7,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users")
@@ -34,6 +38,7 @@ public class UserController {
     model.addAttribute("isAdmin", isAdmin);
     return new ModelAndView("user");
   }
+
 
   public boolean isAdmin(String email) {
     User user = userRepository.findByEmail(email).orElse(null);

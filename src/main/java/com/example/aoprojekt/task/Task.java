@@ -25,7 +25,6 @@ public class Task {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
-  @JsonIgnore
   private User user;
 
   public Task() {}
@@ -53,12 +52,28 @@ public class Task {
     this.title = title;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   public boolean isResolved() {
     return resolved;
   }
 
   public void setResolved(boolean resolved) {
     this.resolved = resolved;
+  }
+
+  public Date getDeadline() {
+    return deadline;
+  }
+
+  public void setDeadline(Date deadline) {
+    this.deadline = deadline;
   }
 
   public Date getCreatedAt() {

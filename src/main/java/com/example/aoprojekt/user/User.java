@@ -1,7 +1,10 @@
 package com.example.aoprojekt.user;
 
+import com.example.aoprojekt.group.GroupUsers;
 import com.example.aoprojekt.task.Task;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.util.Date;
 import java.util.Set;
 
@@ -21,6 +24,10 @@ public class User {
 
   @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
   private Set<Task> tasks;
+
+  @Getter
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  private Set<GroupUsers> groupUsers;
 
   public User() {}
 
@@ -60,5 +67,17 @@ public class User {
 
   public Set<Task> getTasks() {
     return tasks;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public void setTasks(Set<Task> tasks) {
+    this.tasks = tasks;
+  }
+
+  public void setGroupUsers(Set<GroupUsers> groupUsers) {
+    this.groupUsers = groupUsers;
   }
 }

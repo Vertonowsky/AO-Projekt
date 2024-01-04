@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moje grupy</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+<body>
+<header th:replace="~{index.html :: header}"></header>
+<div class="container my-5">
+    <table class="table" style="cursor: pointer">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Opis</th>
+            <th scope="col">Data utworzenia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="group : ${groups}">
+            <td th:text="${group.id}"></td>
+            <td th:text="${group.name}"></td>
+            <td th:text="${group.description}"></td>
+            <td th:text="${#dates.format(group.createdAt, 'dd-MM-yyyy HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script th:src="@{js/bootstrap.js}"></script>
+</body>
+</html>

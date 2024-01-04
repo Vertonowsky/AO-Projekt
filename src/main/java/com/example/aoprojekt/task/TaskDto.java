@@ -2,33 +2,27 @@ package com.example.aoprojekt.task;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskDto {
 
-    @NotBlank
-    @NotEmpty
-    private String title;
+    private Task task;
 
-    @NotNull
-    private long userId;
+    private String groupName;
 
-    public String getTitle() {
-        return title;
+    public Task getTask() {
+        return task;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTask(Task task) {
+        this.task = task;
     }
 
-    public long getUserId() {
-        return userId;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

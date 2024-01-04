@@ -51,26 +51,6 @@ public class AoProjektApplication {
     }
   }
 
-  @GetMapping("/tasks")
-  public ModelAndView tasks(Authentication authentication, Model model) {
-    Boolean isAdmin = false;
-
-    if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
-      OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-      String email = oAuth2User.getAttribute("email");
-
-      User user = userRepository.findByEmail(email).orElse(null);
-      isAdmin = isAdmin(email);
-
-      model.addAttribute("title", "Wszystkie zadania!");
-      model.addAttribute("userId", user == null ? -1 : user.getId());
-      model.addAttribute("allTasks", true);
-    }
-
-    model.addAttribute("isAdmin", isAdmin);
-    return new ModelAndView("task");
-  }
-
   public boolean isAdmin(String email) {
     User user = userRepository.findByEmail(email).orElse(null);
     if (user == null) return false;
