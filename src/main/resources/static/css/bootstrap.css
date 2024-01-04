@@ -12064,5 +12064,66 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+html {
+  height: 100%;
+  scroll-padding-top: calc(4.5rem - 1px);
+}
 
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.text-white-75 {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.btn-xl {
+  padding: 1.25rem 2.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10rem;
+}
+
+hr.divider {
+  height: 0.2rem;
+  max-width: 3.25rem;
+  margin: 1.5rem auto;
+  background-color: #f4623a;
+  opacity: 1;
+}
+
+header.masthead {
+  padding-top: 10rem;
+  padding-bottom: calc(10rem - 4.5rem);
+  background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("https://ocdn.eu/sport-images-transforms/1/dw1k9lBaHR0cHM6Ly9vY2RuLmV1L3B1bHNjbXMvTURBXy9iNmRlMDVhYTliMmE0YTY0YzRjZWQ5ZGYwNjg4OTUzYy5qcGeTlQMAG80QL80JG5UCzQSwAMLDkwmmYjg4MDU3Bt4AAqEwAaExAQ/lebron-james.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+}
+header.masthead h1, header.masthead .h1 {
+  font-size: 2.25rem;
+}
+@media (min-width: 992px) {
+  header.masthead {
+    height: 100vh;
+    min-height: 40rem;
+    padding-top: 4.5rem;
+    padding-bottom: 0;
+  }
+  header.masthead p {
+    font-size: 1.15rem;
+  }
+  header.masthead h1, header.masthead .h1 {
+    font-size: 3rem;
+  }
+}
+@media (min-width: 1200px) {
+  header.masthead h1, header.masthead .h1 {
+    font-size: 3.5rem;
+  }
+}
 /*# sourceMappingURL=bootstrap.css.map */
