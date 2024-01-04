@@ -6,37 +6,21 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
   </head>
   <body>
-    <section class="vh-100" style="background-color: #508bfc;">
-        <div class="container py-5   h-100">
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-              <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                <div class="card-body p-5 text-center">
-      
-                  <h3 class="mb-5">Zaloguj się</h3>
-      
-                  <div class="form-outline mb-4">
-                    <input type="email" id="typeEmailX-2" class="form-control form-control-lg" />
-                    <label class="form-label" for="typeEmailX-2">Email</label>
+    <body id="page-top">
+      <header class="masthead">
+          <div class="container px-4 px-lg-5 h-100">
+              <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+                  <div class="col-lg-8 align-self-end">
+                      <h1 class="text-white font-weight-bold">Zaloguj się do swojego konta przy pomocy google.</h1>
+                      <hr class="divider" />
                   </div>
-      
-                  <div class="form-outline mb-4">
-                    <input type="password" id="typePasswordX-2" class="form-control form-control-lg" />
-                    <label class="form-label" for="typePasswordX-2">Hasło</label>
+                  <div class="col-lg-8 align-self-baseline">
+                      <p class="text-white-75 mb-5">Witamy na fenomenalnej stronie "nazwa robocza". Zrobisz tu co będziesz chciał i nawet Lebron pomoże.</p>
+                      <a class="btn btn-primary btn-xl">Zaloguj się</a>
                   </div>
-      
-                  <button class="btn btn-primary btn-lg btn-block" type="submit">Zaloguj</button>
-      
-                  <hr class="my-4">
-      
-                  <button class="btn btn-lg btn-block btn-primary" style="background-color: #dd4b39;"
-                    type="submit"><i class="fab fa-google me-2"></i> Zaloguj przy pomocy google</button>     
-                </div>
               </div>
-            </div>
           </div>
-        </div>
-      </section>
-    <script th:src="@{js/bootstrap.js}"></script>
+      </header>
+      <script th:src="@{js/bootstrap.js}"></script>
   </body>
 </html>
