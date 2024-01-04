@@ -1,5 +1,6 @@
 package com.example.aoprojekt.group;
 
+import com.example.aoprojekt.task.Task;
 import com.example.aoprojekt.user.User;
 import jakarta.persistence.*;
 
@@ -27,11 +28,14 @@ public class Group {
   @NonNull
   private String description;
 
+  @NonNull
+  private Date createdAt;
+
   @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
   Set<GroupUsers> groupUsers;
 
-  @NonNull
-  private Date createdAt;
+  @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+  private Set<Task> tasks;
 
   public Group() {
   }

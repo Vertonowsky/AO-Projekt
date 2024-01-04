@@ -1,5 +1,6 @@
 package com.example.aoprojekt.task;
 
+import com.example.aoprojekt.group.Group;
 import com.example.aoprojekt.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -23,9 +24,13 @@ public class Task {
 
   private Date createdAt;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id")
   private User user;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "group_id")
+  private Group group;
 
   public Task() {}
 
@@ -90,5 +95,13 @@ public class Task {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public Group getGroup() {
+    return group;
+  }
+
+  public void setGroup(Group group) {
+    this.group = group;
   }
 }

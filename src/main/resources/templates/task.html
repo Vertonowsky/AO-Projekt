@@ -21,6 +21,7 @@
       <th scope="col">Data utworzenia</th>
       <th scope="col">Ostateczny termin ukończenia</th>
       <th scope="col">Wykonane</th>
+      <th scope="col">Grupa użytkowników</th>
     </tr>
     </thead>
     <tbody>
@@ -31,6 +32,7 @@
       <td th:text="${#dates.format(task.createdAt, 'dd-MM-yyyy HH:mm:ss')}"></td>
       <td th:text="${#dates.format(task.deadline, 'dd-MM-yyyy HH:mm:ss')}"></td>
       <td th:text="${task.resolved}"></td>
+      <td th:text="${task.group.name}"></td>
     </tr>
     </tbody>
   </table>
