@@ -31,11 +31,11 @@ public class SecurityConfig {
         c -> {
           c.requestMatchers(toH2Console()).permitAll();
           c.requestMatchers("/css/**").permitAll();
-          c.requestMatchers("/login1").permitAll().anyRequest().authenticated();
+          c.requestMatchers("/logowanie").permitAll().anyRequest().authenticated();
         });
     http.oauth2Login(
         c -> {
-          c.loginPage("/login1");
+          c.loginPage("/logowanie");
           c.successHandler(
               new AuthenticationSuccessHandler() {
 

@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/login1")
+@RequestMapping("/logowanie")
 public class LoginController {
 
   @GetMapping
   public String groups(Authentication authentication, Model model) {
 
-    return "login1";
+    return "logowanie";
   }
 }
 
